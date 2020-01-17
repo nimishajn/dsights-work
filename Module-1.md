@@ -119,3 +119,39 @@ The task definition defines what docker image to run and how to run it.
 - Go to web-browser and paste <LB DNS name>:<80>  
 - This should open your application running inside the docker container running on the AWS Fargate Cluster.
 
+
+# Register DNS on Route 53
+
+- Go to Route53 in AWS Console
+- Click on **Domain Registration** and then click on **Register Domain**
+- Enter the domain you want in the Choose a Domain box and then select a **Top Level Domain**. And click the Check button to see if the domain is available. If the domain is available, click the Add to cart button and scroll to the bottom of the page to click Continue.
+- Enter the contact imformation and complete the payment.
+- If you registered a domain that has a generic top-level domain (such as .com), you'll receive an email that asks you to confirm your email address.
+- It will take 2-3 days or hours to get the domain registered.
+- You must follow the link in this email to confirm your email address, or the domain won't be registered.
+
+**For all domains, you'll receive an email when your domain registration has been approved.**
+**Note: it can take a few minutes for the system to confirm the registration of your new domain.**
+**Note: Domains are not part of the free tier so you will be charged for any domain you register.**
+
+# Configure DNS
+- Once the domain is registered, we can now point our Load Balancer DNS to our domain, and access our application via the domain name itself.
+- For doing so, go to **Route 53 -> Hosted Zone -> Create Hosted Zone**
+- Give the Domain Name as your registered Domain name 
+
+![Create Hosted Zone](https://github.com/nimishajn/dsights-work/blob/master/images/create%20hosted%20zone.png)
+
+- When the zone is created, you will see two default record sets in it. They would be of type NS and SOA. Create the zone public.
+- Create a third record set, keep the **Name** field empty, **Type A-IPv4** , **Alias A**.
+- Select **Alias Target** to point to your **Load balancer DNS** and click **Save Record Set**.
+
+# Register the Route53 Nameservers with our Registered Domain
+- Once the Record Set is created, we need to register the Nameservers with our DNS.
+
+![View Nameservers in the hosted zone](https://github.com/nimishajn/dsights-work/blob/master/images/Nameservers.png)
+
+- To register the nameservers, Click on **Registered Domains** on the left menu in Route 53, Search for your domain.
+- Inside the Domain, you will see an option to **Add or edit Nameservers**. Click on it and add all the Nameservers Dns of your Hosted Zone to it, and press OK.
+- It will take sometime for your nameservers to be added and reflected in your domain.
+- **Try accessing your domain URL in the browser, it should open your application the same way you see when you access your load balancers DNS**.
+- **Your application will now be visible on the registered Domain.**
